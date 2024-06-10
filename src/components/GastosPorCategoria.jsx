@@ -1,24 +1,46 @@
-import { Helmet } from 'react-helmet';
 import {Header, Titulo} from './../elementos/Header';
-import BtnRegresar from '../elementos/BtnRegresar';
+import {Helmet} from 'react-helmet';
+import BtnRegresar from './../elementos/BtnRegresar';
+import BarraTotalGastado from './BarraTotalGastado';
+import useObtenerGastosDelMesPorCategoria from './../hooks/useObtenerGastosDelMesPorCategoria';
+import {ListaDeCategorias,ElementoListaCategorias,Categoria,Valor} from './../elementos/ElementosDeLista';
+import IconoCategoria from './../elementos/IconoCategoria';
+// import {convertirAMoneda} from './../funciones/convertirAMonedas';
+import formatearCantidad from './../funciones/convertirAMonedas';
 
 
 const GastosPorCategoria = () => {
-  return (
-    <>
-      <Helmet>
-      <title>Gastos por Categoria</title>
-    </Helmet>
-    <Header>
-        <BtnRegresar  />
-        <Titulo>
-        Gastos por Categoría
-        </Titulo>     
-    </Header>
+	const gastosPorCategoria = useObtenerGastosDelMesPorCategoria();
+	console.log(gastosPorCategoria);
 
+	return (
+		<>
+			<Helmet>
+				<title>Gastos por Categoría</title>
+			</Helmet>
 
-    </>
-  )
+			<Header>
+				<BtnRegresar />
+				<Titulo>Gastos por Categoría</Titulo>
+			</Header>
+
+			<ListaDeCategorias>
+				{gastosPorCategoria.map((elemento, index) => {
+					return(
+						<ElementoListaCategorias key={index}>
+							<Categoria>
+								<IconoCategoria id={elemento.categoria}/>
+									{elemento.categoria}
+								</Categoria>
+							<Valor>{formatearCantidad(elemento.cantidad)}</Valor>
+						</ElementoListaCategorias>
+					);
+				})}
+			</ListaDeCategorias>
+
+			<BarraTotalGastado />
+		</>
+	);
 }
-
-export default GastosPorCategoria
+ 
+export default GastosPorCategoria;

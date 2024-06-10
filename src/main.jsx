@@ -7,6 +7,10 @@ import {Helmet} from 'react-helmet';
 import {BrowserRouter,Route,Routes} from 'react-router-dom';
 import {Contenedor,Fondo} from './elementos/index.js';
 import {RegistroUsuarios,InicioSesion, EditarGasto, GastosPorCategoria, ListaDegastos} from './components/index.js';
+import { AuthProvider } from './contextos/AuthContext.jsx';
+import RutaProtegida from './components/RutaPrivada.jsx';
+import { TotalGastadoProvider } from './contextos/TotalGastadoEnElMesContext.jsx';
+
 
 
 WebFont.load({
@@ -16,23 +20,44 @@ WebFont.load({
 });
 
 const Index = () => {
+  
   return ( 
     <>
     <Helmet>
       <link rel='shortcut icon' href={favicon} type='image/x-icon'  />
     </Helmet>
-    <BrowserRouter>
+    <AuthProvider>
+      <TotalGastadoProvider>
+        <BrowserRouter>
          <Contenedor>
             <Routes>
-              <Route path='iniciar-sesion' element={<InicioSesion/>} />
-              <Route path='crear-cuenta' element={<RegistroUsuarios/>} />
-              <Route path='categorias' element={<GastosPorCategoria/>} />
-              <Route path='lista' element={<ListaDegastos/>} />
-              <Route path='/editar/:id' element={<EditarGasto/>} />
-              <Route path='/' element={<App/>} />    
+              <Route path='/iniciar-sesion' element={<InicioSesion/>} />
+              <Route path='/crear-cuenta' element={<RegistroUsuarios/>} />
+              <Route path='/categorias' element={
+                <RutaProtegida>
+                  <GastosPorCategoria/>
+                </RutaProtegida>
+              }/>
+              <Route path='/lista' element={
+                <RutaProtegida>
+                  <ListaDegastos/>
+                </RutaProtegida>
+              } />
+              <Route path='/editar/:id' element={
+                <RutaProtegida>
+                    <EditarGasto/>
+                </RutaProtegida>
+              } />
+              <Route path='/' element={
+                <RutaProtegida>
+                    <App/>
+                </RutaProtegida>
+              } />    
             </Routes>
           </Contenedor>
-    </BrowserRouter>
+        </BrowserRouter>
+      </TotalGastadoProvider>
+    </AuthProvider>
     <Fondo/>
     </>
      );
